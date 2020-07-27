@@ -23,5 +23,4 @@ class TestAlpariApi:
 
 
 Tst = TestAlpariApi()
-r = Tst.test_func('EUR', 'USD')
-print(r)
+Tst.test_func('EUR', 'USD')
