@@ -8,7 +8,7 @@ class TestAlpariApi:
     HEADERS = {"User-Agent": "Test", "Referer": "https://alpari.com"}
 
     def test_func(self, src, dst):
-        res = requests.get(self.URL + 'src=' + src + '&' + 'dst=' + dst, headers=self.HEADERS)
+        res = requests.get(f'{self.URL} src= {src} &dst= {dst}', headers=self.HEADERS)
         body = json.loads(res.content)
         try:
             assert res.status_code == 200
