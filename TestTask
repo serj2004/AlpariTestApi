@@ -1,0 +1,57 @@
+import json
+import requests
+
+
+class TestTask:
+
+    URL = "https://regions-test.2gis.com/1.0/regions?"
+    QUERY_PARAM = {"nm": "q=",
+                   "cd": "country_code=",
+                   "pg": "page=",
+                   "sz": "page_size="}
+
+    def test_search(self):
+        """Проверка возвращаемого кода"""
+        res = requests.get(self.URL)
+        assert res.status_code == 200
+
+    def test_region_search(self):
+        """Проверка поиска названия региона"""
+        res = requests.get(self.URL + self.QUERY_PARAM["nm"] +"ново")
+        body = json.loads(res.content)
+        assert body["items"][0]["code"] == 'novosibirsk'
+
+    def test_country_search(self):
+        """Проверка возвращения только городов с кодом страны kg"""
+        code = []
+        res = requests.get(self.URL + self.QUERY_PARAM["cd"] + "kg")
+        body = json.loads(res.content)
+        for i in body["items"]:
+            code.append(i["country"]["code"])
+        for j in code:
+            assert j == "kg"
+
+    def test_page_number(self):
+        """Проверка наличия элементов на 3й странице"""
+        res = requests.get(self.URL + self.QUERY_PARAM["pg"] + str(3))
+        body = json.loads(res.content)
+        assert body["items"] != []
+
+    def test_page_size(self):
+        """Проверка возвращения определенного количества элементов на странице"""
+        items = 10
+        quantity = []
+        res = requests.get(self.URL + self.QUERY_PARAM["sz"] + str(items))
+        body = json.loads(res.content)
+        for i in body["items"]:
+            quantity.append(i)
+        assert (len(quantity)) == items
+
+
+A = TestTask()
+A.test_search()
+A.test_region_search()
+A.test_country_search()
+A.test_page_number()
+A.test_page_size()
+
